@@ -25,19 +25,19 @@
       ng-model="register.email"
       ng-model-options="{updateOn: 'blur'}"
       ng-model-options-on-invalid="{updateOn: 'default'}">
+
+    <h2>
+      Email
+    </h2>
+
+    <pre ng-bind="register.email | json"></pre>
+
+    <h2>
+      Form
+    </h2>
+
+    <pre ng-bind="registerForm | json"></pre>
   </form>
-
-  <h2>
-    Email
-  </h2>
-
-  <pre ng-bind="register.email | json"></pre>
-
-  <h2>
-    Form
-  </h2>
-
-  <pre ng-bind="registerForm | json"></pre>
 </body>
 
 </html>
