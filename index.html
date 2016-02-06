@@ -18,33 +18,57 @@
     The ng-model-options will be reset to the passed object when the form control transitions to an $invalid state. This is useful for switching from lazy to greedy validation to give the user instant feedback after they have initially made a mistake.
   </p>
 
+  <h2>Demos</h2>
+
   <form name="registerForm">
-    <input
-      type="email"
-      name="email"
-      ng-model="register.email"
-      ng-model-options="{updateOn: 'blur'}"
-      ng-model-options-on-invalid="{updateOn: 'default'}">
+    <section>
+      <h1>Change <code>blur</code> validation to default (greedy) validation</h1>
 
-    <span style="color:green" ng-show="registerForm.email.$touched && registerForm.email.$valid">
-      Valid email
-    </span>
+      <input
+        type="email"
+        required
+        name="email"
+        placeholder="Email"
+        ng-model="register.email"
+        ng-model-options="{updateOn: 'blur'}"
+        ng-model-options-on-invalid="{updateOn: 'default'}">
 
-    <span style="color:red" ng-show="registerForm.email.$invalid">
-      Invalid email
-    </span>
+      <span style="color:green" ng-show="registerForm.email.$valid">
+        Valid email
+      </span>
 
-    <h2>
-      Email
-    </h2>
+      <span style="color:red" ng-show="registerForm.email.$invalid && registerForm.email.$touched">
+        Invalid email
+      </span>
 
-    <pre ng-bind="register.email | json"></pre>
+      <strong>Model:</strong>
+      <span ng-bind="register.email"></span>
+    </section>
 
-    <h2>
-      Form
-    </h2>
+    <section>
+      <h1>Change debouncing to default (greedy) validation</h1>
 
-    <pre ng-bind="registerForm | json"></pre>
+      <input
+        name="name"
+        required
+        placeholder="Name"
+        ng-model="register.name"
+        ng-model-options="{debounce: 1000}"
+        ng-model-options-on-invalid="{updateOn: 'default'}">
+
+      <span style="color:green" ng-show="registerForm.name.$valid">
+        Valid name
+      </span>
+
+      <span style="color:red" ng-show="registerForm.name.$invalid && registerForm.name.$touched">
+        Invalid name
+      </span>
+
+      <div>
+        <strong>Model:</strong>
+        <span ng-bind="register.name"></span>
+      </div>
+    </section>
   </form>
 </body>
 

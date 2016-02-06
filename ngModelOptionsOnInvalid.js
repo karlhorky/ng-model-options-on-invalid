@@ -3,27 +3,20 @@ angular.module('NgModelOptionsOnInvalid', []).directive('ngModelOptionsOnInvalid
     require: ['ngModel', '^form'],
     controller: function ($element, $scope, $attrs) {
       var
+        DEFAULT_REGEXP = /(\s+|^)default(\s+|$)/,
         ngModelOptionsController = $element.controller('ngModel'),
-        formController = $element.controller('form');
+        formController = $element.controller('form'),
+        $options = $scope.$eval($attrs.ngModelOptionsOnInvalid);
 
-      var unwatch = $scope.$watch(formController.$name + '.' + $attrs.name + '.$valid', function (newVal) {
-        if (newVal === false) {
+      var unwatch = $scope.$watch(formController.$name + '.' + $attrs.name + '.$valid', function (newVal, oldVal) {
+        if (newVal !== oldVal && newVal === false) {
 
-        // TODO: get the options from the attr
-
-        // var DEFAULT_REGEXP = /(\s+|^)default(\s+|$)/;
-        // $options = copy($scope.$eval($attrs.ngModelOptions))
-        // $options.updateOn.replace(DEFAULT_REGEXP, function() {
-        //   $options.updateOnDefault = true;
-        //   return ' ';
-        // })
-        // ngModelOptionsController.$$setOptions($options);
-
-
-
-          ngModelOptionsController.$$setOptions({
-            updateOnDefault: true
+          $options.updateOn.replace(DEFAULT_REGEXP, function() {
+            $options.updateOnDefault = true;
+            return ' ';
           });
+
+          ngModelOptionsController.$$setOptions($options);
 
           unwatch();
         }
