@@ -22,7 +22,7 @@ angular.module('NgModelOptionsOnInvalid', []).directive('ngModelOptionsOnInvalid
 
 
           ngModelOptionsController.$$setOptions({
-            updateOn: 'default'
+            updateOnDefault: true
           });
 
           unwatch();
