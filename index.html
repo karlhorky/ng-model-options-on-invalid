@@ -26,6 +26,10 @@
       ng-model-options="{updateOn: 'blur'}"
       ng-model-options-on-invalid="{updateOn: 'default'}">
 
+    <span style="color:green" ng-show="registerForm.email.$valid">
+      Valid email
+    </span>
+
     <span style="color:red" ng-show="registerForm.email.$invalid">
       Invalid email
     </span>
