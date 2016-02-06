@@ -1,4 +1,4 @@
-angular.module('NgModelOptionsOnInvalid').directive('ngModelOptionsOnInvalid', function () {
+angular.module('NgModelOptionsOnInvalid', []).directive('ngModelOptionsOnInvalid', function () {
   return {
     require: ['ngModel', '^form'],
     controller: function ($element, $scope, $attrs) {
