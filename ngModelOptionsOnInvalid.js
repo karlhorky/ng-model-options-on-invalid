@@ -4,7 +4,7 @@ angular.module('NgModelOptionsOnInvalid', []).directive('ngModelOptionsOnInvalid
     controller: function ($element, $scope, $attrs) {
       var
         DEFAULT_REGEXP = /(\s+|^)default(\s+|$)/,
-        ngModelOptionsController = $element.controller('ngModel'),
+        ngModelController = $element.controller('ngModel'),
         formController = $element.controller('form'),
         $options = $scope.$eval($attrs.ngModelOptionsOnInvalid);
 
@@ -16,7 +16,7 @@ angular.module('NgModelOptionsOnInvalid', []).directive('ngModelOptionsOnInvalid
             return ' ';
           });
 
-          ngModelOptionsController.$$setOptions($options);
+          ngModelController.$$setOptions($options);
 
           unwatch();
         }
