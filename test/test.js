@@ -1,10 +1,12 @@
 import test from 'ava';
 import jsdom from 'jsdom';
+import fs from 'fs';
 
 
 test.before(t => {
   // Angular dependencies
-  global.document = jsdom.jsdom('<!doctype html><html><head><meta charset="utf-8"></head><body></body></html>');
+  const angularScript = fs.readFileSync('../node_modules/angular/angular.js', 'utf8');
+  global.document = jsdom.jsdom(`<!doctype html><html><head><meta charset="utf-8"><script>${angularScript}</script></head><body ng-app="app"><div><div ng-if="notInScope">aabbcc</div></div></body></html>`);
   global.window = document.defaultView;
   global.Node = global.window.Node;
 
