@@ -1,47 +1,36 @@
 import test from 'ava';
 import jsdom from 'jsdom';
-// import 'angular';
-// import 'angular-mocks';
 
-//
-const dom = {
-  then: (resolve, reject) => {
-    const config = {
-      html: '<!doctype html><html><head><meta charset="utf-8"></head><body>asdf</body></html>',
-      scripts: [],
-      done: (err, window) => {
-        if (err) {
-          reject(err);
-        } else {
-          // Angular dependencies
-          global.window = window;
-          global.document = window.document;
-          global.Node = window.Node;
 
-          // Fixes `angular is not defined` in index.js
-          global.angular = null;
+test.before(t => {
+  // Angular dependencies
+  global.document = jsdom.jsdom('<!doctype html><html><head><meta charset="utf-8"></head><body></body></html>');
+  global.window = document.defaultView;
+  global.Node = global.window.Node;
 
-          require('angular');
+  require('angular/angular');
 
-          // Make angular available for angular-mocks
-          global.angular = window.angular;
-          require('angular-mocks');
+  // Make angular available for angular-mocks
+  global.angular = global.window.angular;
 
-          angular.module('app', []);
+  // Set some window properties required by angular-mocks
+  global.window.mocha = {};
+  global.window.beforeEach = test.beforeEach;
+  global.window.afterEach = test.afterEach;
 
-          resolve(window);
-        }
-      }
-    };
+  require('angular-mocks');
 
-    jsdom.env(config);
-  }
-};
+  angular.module('app', ['NgModelOptionsOnInvalid']);
+});
 
-test(t => {
-  return Promise.resolve(dom)
-    .then(window => {
-      const body = window.document.querySelector('body').textContent;
-      t.is(body, 'asdf');
-    });
+
+test('a', t => {
+  angular.mock.inject(($rootScope, $compile) => {
+    const scope = $rootScope.$new();
+    const element = $compile('<div><div ng-if="notInScope">aabbcc</div></div>')(scope);
+    $rootScope.$digest();
+    const abc = element.html() || '';
+    console.log('abc', abc);
+    t.false(abc.includes('aabbcc'));
+  });
 });
