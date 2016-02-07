@@ -1,0 +1,33 @@
+{
+  "name": "ng-model-options-on-invalid",
+  "version": "1.0.0",
+  "description": "Change ng-model-options when a form element is marked as invalid",
+  "main": "ngModelOptionsOnInvalid.js",
+  "scripts": {
+    "test": "ava"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/karlhorky/ng-model-options-on-invalid.git"
+  },
+  "keywords": [
+    "angular",
+    "ng-model-options",
+    "validation",
+    "invalid",
+    "$invalid",
+    "forms"
+  ],
+  "author": "Karl Horky",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/karlhorky/ng-model-options-on-invalid/issues"
+  },
+  "homepage": "https://github.com/karlhorky/ng-model-options-on-invalid#readme",
+  "devDependencies": {
+    "angular": "^1.5.0",
+    "angular-mocks": "^1.5.0",
+    "ava": "^0.11.0",
+    "jsdom": "^8.0.2"
+  }
+}
