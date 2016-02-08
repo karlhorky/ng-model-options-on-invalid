@@ -22,45 +22,90 @@ require('../ngModelOptionsOnInvalid');
 angular.module('app', ['NgModelOptionsOnInvalid']);
 
 
-test.beforeEach(t => {
-  angular.mock.module('app');
+let $rootScope, $compile;
+
+test.beforeEach(angular.mock.module('app'));
+
+test.beforeEach(angular.mock.inject((_$rootScope_, _$compile_) => {
+  $rootScope = _$rootScope_;
+  $compile = _$compile_;
+}));
+
+
+test.serial('change updateOn from "blur" to "default" on invalid', t => {
+  const scope = $rootScope.$new();
+
+  scope.register = {};
+
+  const element = $compile(`
+    <form name="registerForm">
+      <input
+        type="email"
+        name="email"
+        ng-model="register.email"
+        ng-model-options="{updateOn: 'blur'}"
+        ng-model-options-on-invalid="{updateOn: 'default'}">
+
+      <button>Click me to trigger a blur</button>
+    </form>
+  `)(scope);
+
+
+  scope.registerForm.email.$setViewValue('karl@example.com');
+
+  // Assert that scope value not yet updated because of updateOn: 'blur'
+  t.is(typeof scope.register.email, 'undefined');
+
+  // Blur the input and assert the value
+  element[0].querySelector('button').click();
+  t.is(scope.register.email, 'karl@example.com');
+
+  // Set the element to an invalid value and blur the input to cause ng-model-options to be updated
+  scope.registerForm.email.$setViewValue('karl@example.');
+  element[0].querySelector('button').click();
+
+  // Test that ng-model-options has been set to updateOn: 'default' (scope updates instantly)
+  scope.registerForm.email.$setViewValue('john@example.com');
+  t.is(scope.register.email, 'john@example.com');
 });
 
-test('reset ng-model-options on invalid', t => {
-  angular.mock.inject(($rootScope, $compile) => {
-    const scope = $rootScope.$new();
 
-    scope.register = {};
+test.serial('remove debounce on invalid', t => {
+  const scope = $rootScope.$new();
 
-    const element = $compile(`
-      <form name="registerForm">
-        <input
-          type="email"
-          name="email"
-          ng-model="register.email"
-          ng-model-options="{allowInvalid: true, updateOn: 'blur'}"
-          ng-model-options-on-invalid="{updateOn: 'default'}">
+  scope.register = {};
 
-        <button>Click me to trigger a blur</button>
-      </form>
-    `)(scope);
+  const element = $compile(`
+    <form name="registerForm">
+      <input
+        type="email"
+        name="email"
+        ng-model="register.email"
+        ng-model-options="{updateOn: 'default', debounce: 200}"
+        ng-model-options-on-invalid="{updateOn: 'default'}">
 
+      <button>Click me to trigger a blur</button>
+    </form>
+  `)(scope);
 
-    scope.registerForm.email.$setViewValue('karl@example.com');
+  scope.registerForm.email.$setViewValue('karl@example.com');
 
-    // Assert that scope value not yet updated because of updateOn: 'blur'
-    t.is(typeof scope.register.email, 'undefined');
+  // Assert that scope value not yet updated because of the debounce option
+  t.is(typeof scope.register.email, 'undefined');
 
-    // Blur the input and assert the value
-    element[0].querySelector('button').click();
-    t.is(scope.register.email, 'karl@example.com');
+  // Click on button to cancel the debounce
+  // TODO: Figure out a way to test the delay properly, possibly with:
+  // - await delay(200) with async function https://github.com/sindresorhus/delay
+  // - $timeout.flush() like in ngModelSpec.js https://github.com/angular/angular.js/blob/ba6d37756e9553afa2ebdda18fb52d49c911e3aa/test/ng/directive/ngModelSpec.js#L1969
+  element[0].querySelector('button').click();
 
-    // Set the element to invalid and blur the input to cause ng-model-options to be updated
-    scope.registerForm.email.$setViewValue('karl@example.');
-    element[0].querySelector('button').click();
+  t.is(scope.register.email, 'karl@example.com');
 
-    // Test that ng-model-options has been set to updateOn: 'default' (scope updates instantly)
-    scope.registerForm.email.$setViewValue('john@example.com');
-    t.is(scope.register.email, 'john@example.com');
-  });
+  // Set the element to an invalid value and cancel the debounce by clicking on the button to cause ng-model-options to be updated
+  scope.registerForm.email.$setViewValue('karl@example.');
+  element[0].querySelector('button').click();
+
+  // Test that ng-model-options has been set without a debounce delay
+  scope.registerForm.email.$setViewValue('john@example.com');
+  t.is(scope.register.email, 'john@example.com');
 });
