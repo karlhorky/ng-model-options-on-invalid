@@ -14,7 +14,7 @@ global.angular = global.window.angular;
 // Set some window properties required by angular-mocks
 global.window.mocha = {};
 global.window.beforeEach = test.beforeEach;
-global.window.afterEach = test.afterEach;
+global.window.afterEach = test.after;
 
 require('angular-mocks');
 require('../ngModelOptionsOnInvalid');
@@ -32,7 +32,7 @@ test.beforeEach(angular.mock.inject((_$rootScope_, _$compile_) => {
 }));
 
 
-test.serial('change updateOn from "blur" to "default" on invalid', t => {
+test('change updateOn from "blur" to "default" on invalid', t => {
   const scope = $rootScope.$new();
 
   scope.register = {};
@@ -70,7 +70,7 @@ test.serial('change updateOn from "blur" to "default" on invalid', t => {
 });
 
 
-test.serial('remove debounce on invalid', t => {
+test('remove debounce on invalid', t => {
   const scope = $rootScope.$new();
 
   scope.register = {};
